@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let instruction = '';
         switch (modelo) {
             case 'enem':
-                instruction = `Você é um corretor especialista no ENEM. Analise a redação com base nas 5 competências do ENEM. A nota final deve ser de 0 a 1000 e a nota de cada competência, de 0 a 200. Os critérios são: 'Competência 1: Domínio da norma culta', 'Competência 2: Compreensão do tema e estrutura', 'Competência 3: Coerência e argumentação', 'Competência 4: Coesão textual', 'Competência 5: Proposta de Intervenção'.`;
+                instruction = `Você é um corretor especialista no ENEM. Analise a redação com base nas 5 competências do ENEM. A nota final deve ser de 0 a 1000. Para cada competência, você deve atribuir uma das seguintes pontuações: 0, 40, 80, 120, 160 ou 200. A nota de cada competência deve refletir o nível de desempenho do candidato. ...`;
                 break;
             case 'fuvest':
                 instruction = `Você é um corretor especialista na FUVEST. Analise a redação com base nos 3 critérios da FUVEST. A nota final deve ser de 0 a 50. Os critérios são: 'Critério A: Desenvolvimento do tema e tipologia textual', 'Critério B: Coerência dos argumentos e articulação das partes do texto', 'Critério C: Correção gramatical e adequação vocabular'.`;
