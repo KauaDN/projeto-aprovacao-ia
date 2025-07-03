@@ -1,0 +1,11 @@
+# Arquivo para ignorar arquivos desnecessários e secretos
+
+# Dependências do Node.js
+node_modules
+
+# Arquivo de variáveis de ambiente (contém segredos)
+.env
+
+# Arquivos de log e sistema operacional
+.DS_Store
+npm-debug.log
