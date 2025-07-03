@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Seletores de Elementos (permanecem os mesmos) ---
     const redacaoForm = document.getElementById('redacao-form');
     const corrigirBtn = document.getElementById('corrigir-btn');
     const btnText = document.getElementById('btn-text');
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeTab = 'digitar';
     let uploadedImageBase64 = null;
 
-    // --- LÓGICA DAS ABAS E UPLOAD (permanece a mesma) ---
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
             activeTab = button.dataset.tab;
@@ -44,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsDataURL(file);
     });
 
-    // --- LÓGICA PRINCIPAL DE CORREÇÃO (AGORA CHAMA NOSSO PRÓPRIO SERVIDOR) ---
     redacaoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -63,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const promptParts = generatePrompt(modelo, tema, textoRedacao, activeTab, uploadedImageBase64);
-            const response = await callBackendApi(promptParts); // Chama nosso backend!
+            const response = await callBackendApi(promptParts); 
             displayCorrection(response);
         } catch (error) {
             console.error("Erro na Correção:", error);
@@ -74,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- NOVA FUNÇÃO DE API (SIMPLES) ---
     async function callBackendApi(promptParts) {
         const response = await fetch('/api/corrigir', {
             method: 'POST',
@@ -90,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
     }
 
-    // --- As outras funções permanecem praticamente as mesmas ---
     function generatePrompt(modelo, tema, texto, activeTab, imageBase64) {
         const baseJsonStructure = `
           "nota_final": "<uma nota final, ex: 850/1000, 8/10, ou um conceito como 'Bom'>",
@@ -121,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'vunesp':
                 instruction = `Você é um corretor especialista da banca VUNESP. Analise a redação com base nos 3 critérios da VUNESP. A nota final deve ser de 0 a 28 (ou outra, dependendo do edital, use o bom senso). Os critérios são: 'Critério A: Tema e Gênero/Tipologia Textual', 'Critério B: Coerência e Coesão', 'Critério C: Modalidade (Norma Padrão)'.`;
                 break;
-            default: // Genérica
+            default: 
                 instruction = `Você é um corretor de redações geral. Analise a redação com base em critérios universais de um bom texto dissertativo-argumentativo. A nota final deve ser de 0 a 10. Os critérios são: 'Estrutura e Tese', 'Qualidade da Argumentação', 'Coesão e Coerência', 'Norma Culta e Vocabulário'.`;
                 break;
         }
@@ -129,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let promptParts = [];
         if (activeTab === 'digitar') {
             promptParts.push({ "text": `${instruction}\nO tema proposto foi: "${tema}"\nA redação do aluno é:\n---\n${texto}\n---\nSua resposta DEVE ser um objeto JSON válido e completo. A estrutura é: {${baseJsonStructure}}` });
-        } else { // activeTab === 'foto'
+        } else { 
             const ocrInstruction = `Sua tarefa é transcrever o texto manuscrito de uma folha de redação. Siga estas regras:\n1. Ignore o cabeçalho (ex: "FOLHA DE REDAÇÃO", "Data:", etc.).\n2. Transcreva APENAS o corpo da redação.\n3. Junte palavras separadas por hífen no final da linha (ex: "contemporâ-neo" vira "contemporâneo").\n\nApós ter o texto transcrito em mente, use-o para a seguinte análise:\n${instruction}\nO tema proposto foi: "${tema}"\n\nSua resposta final DEVE ser apenas o objeto JSON da análise. A estrutura é: {${baseJsonStructure}}`;
             promptParts.push({ "text": ocrInstruction });
             promptParts.push({ "inline_data": { "mime_type": "image/jpeg", "data": imageBase64 } });
@@ -137,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return promptParts;
     }
 
-    // --- FUNÇÃO DE EXIBIÇÃO SEGURA ---
     function displayCorrection(data) {
         if (!data || !data.analise_geral) {
             showAlert("A resposta da IA foi recebida, mas está incompleta.");
@@ -173,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
         correcaoOutput.innerHTML = html;
     }
     
-    // --- Funções Auxiliares ---
     function toggleLoading(isLoading) {
         corrigirBtn.disabled = isLoading;
         btnText.textContent = isLoading ? 'Corrigindo...' : 'Corrigir Redação';
